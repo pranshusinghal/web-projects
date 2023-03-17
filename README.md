@@ -6,6 +6,10 @@ Web Projects
 - git config user.name "Pranshu Singhal"
 - git config user.email singhalpranshu12@gmail.com
 
+**virtual-env Creation**
+- python3 -m venv venv
+- source venv/bin/activate
+- pip install django djangorestframework django-cors-headers
 
 **Django useful commands**
 - django-admin startproject myproject
