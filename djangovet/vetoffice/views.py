@@ -1,7 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
-
+pets = [
+  { "petname": "Fido", "animal_type": "dog"},
+  { "petname": "Clementine", "animal_type": "cat"},
+  { "petname": "Cleo", "animal_type": "cat"},
+  { "petname": "Oreo", "animal_type": "dog"},
+]
 def home(request):
-  context = {"name": "Spot"}
+  context = {"name": "Djangoer", "pets": pets}
   return render(request, "vetoffice/home.html", context)

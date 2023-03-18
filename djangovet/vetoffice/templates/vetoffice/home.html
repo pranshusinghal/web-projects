@@ -1,5 +1,17 @@
-{% extends "vetoffice/base.html" %}
+{% extends 'vetoffice/base.html' %}
+{% load static %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'vetoffice/style.css' %}">
+{% endblock %}
 
 {% block content %}
-  <p>Welcome!</p>
+
+  <p>Welcome, {{ name }}!</p>
+  <p>Here is the current list of patients:</p>
+    <!-- Put the loop below here! -->
+  {% for pet in pets %}
+    <p>{{pet.petname}}: {{pet.animal_type}}</p>
+  {% endfor %}
+
 {% endblock %}
