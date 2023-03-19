@@ -6,12 +6,9 @@
 {% endblock %}
 
 {% block content %}
-
   <p>Welcome, {{ name }}!</p>
   <p>Here is the current list of patients:</p>
-    <!-- Put the loop below here! -->
   {% for pet in pets %}
     <p>{{pet.petname}}: {{pet.animal_type}}</p>
   {% endfor %}
-
 {% endblock %}
