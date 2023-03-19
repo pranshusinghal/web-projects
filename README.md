@@ -16,3 +16,4 @@ Web Projects
 - python3 manage.py migrate
 - python3 manage.py startapp <name_of_app>
 - python3 manage.py runserver <optional_port_number>
+- python manage.py createsuperuser  # give username and password "admin"
