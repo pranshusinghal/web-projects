@@ -1,55 +1,84 @@
-from django.shortcuts import render
-from .models import Owner, Patient
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.http import Http404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Owner, Patient, Appointment
+from .forms import OwnerCreateForm, OwnerUpdateForm, PatientCreateForm, PatientUpdateForm, AppointmentCreateForm, AppointmentUpdateForm
 
+from django.urls import reverse_lazy
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import logout
+
+# Complete your SignUp view below:
+class SignUp(CreateView):
+  form_class = UserCreationForm
+  success_url = reverse_lazy("login")
+  template_name = "registration/signup.html"
+
+def logout_view(request):
+  logout(request)
+  return redirect("home")
+
+@login_required
 def home(request):
-  try:
-    found_pet = Patient.objects.get(pk=1)
-  except Patient.DoesNotExist:
-    raise Http404()
-  context = {"name": "Djangoer", "pet": found_pet}
+  context = {"name": request.user}
   return render(request, "vetoffice/home.html", context)
 
-class OwnerList(ListView):
+class OwnerList(LoginRequiredMixin, ListView):
   model = Owner
-  template_name = "vetoffice/owner_list.html"
 
-class PatientList(ListView):
+class PatientList(LoginRequiredMixin, ListView):
   model = Patient
-  template_name = "vetoffice/patient_list.html"
 
-class OwnerCreate(CreateView):
+class AppointmentList(LoginRequiredMixin, ListView):
+  model = Appointment
+
+class OwnerCreate(LoginRequiredMixin, CreateView):
   model = Owner
   template_name = "vetoffice/owner_create_form.html"
-  fields = ["first_name", "last_name", "phone"]
-  success_url = "/vetoffice/owner/list"
+  form_class = OwnerCreateForm
 
-class PatientCreate(CreateView):
-  model = Patient
+class PatientCreate(LoginRequiredMixin, CreateView):
+  model=Patient
   template_name = "vetoffice/patient_create_form.html"
-  fields = ["animal_type", "breed", "pet_name", "age", "owner"]
-  success_url = "/vetoffice/patient/list"
+  form_class = PatientCreateForm
 
-class OwnerUpdate(UpdateView):
+class AppointmentCreate(LoginRequiredMixin, CreateView):
+  model=Appointment
+  template_name = "vetoffice/appointment_create_form.html"
+  form_class = AppointmentCreateForm
+
+  def form_valid(self, form):
+    form.instance.user = self.request.user
+    return super().form_valid(form)
+
+class OwnerUpdate(LoginRequiredMixin, UpdateView):
   model = Owner
   template_name = "vetoffice/owner_update_form.html"
-  fields = ["first_name", "last_name", "phone"]
-  success_url = "/vetoffice/owner/list"
+  form_class = OwnerUpdateForm
 
-class PatientUpdate(UpdateView):
+class PatientUpdate(LoginRequiredMixin, UpdateView):
   model = Patient
   template_name = "vetoffice/patient_update_form.html"
-  fields = ["animal_type", "breed", "pet_name", "age", "owner"]
-  success_url = "/vetoffice/patient/list"
+  form_class = PatientUpdateForm
 
-class OwnerDelete(DeleteView):
+class AppointmentUpdate(LoginRequiredMixin, UpdateView):
+  model = Appointment
+  template_name = "vetoffice/appointment_update_form.html"
+  form_class = AppointmentUpdateForm
+
+class OwnerDelete(LoginRequiredMixin, DeleteView):
   model = Owner
   template_name = "vetoffice/owner_delete_form.html"
-  success_url = "/vetoffice/owner/list"
+  success_url = "/owner/list"
 
-class PatientDelete(DeleteView):
+class PatientDelete(LoginRequiredMixin, DeleteView):
   model = Patient
   template_name = "vetoffice/patient_delete_form.html"
-  success_url = "/vetoffice/patient/list"
+  success_url = "/patient/list"
+
+class AppointmentDelete(LoginRequiredMixin, DeleteView):
+  model = Appointment
+  template_name = "vetoffice/appointment_delete_form.html"
+  success_url = "/appointment/list"
